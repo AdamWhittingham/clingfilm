@@ -7,6 +7,7 @@ require 'rspec/logging_helper'
 
 require_relative 'actor_helper'
 require_relative 'logging_helper'
+require_relative 'coverage_helper'
 
 RSpec.configure do |config|
   config.color_enabled = true
