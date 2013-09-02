@@ -2,8 +2,8 @@ require 'celluloid'
 require 'celluloid/autostart'
 require 'logging'
 
-require 'infrastructure/messaging_wrapper'
-require 'infrastructure/pulse'
+require_relative 'messaging_wrapper'
+require_relative 'pulse'
 
 class Marshaller < Celluloid::SupervisionGroup
   alias_method :stop!, :finalize
