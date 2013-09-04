@@ -3,9 +3,9 @@ require production_code
 
 class Foo; def update; end; end
 
-describe Marshaller, :celluloid do
+describe Hollywood::Marshaller, :celluloid do
 
-  subject{ Marshaller.run! }
+  subject{ Hollywood::Marshaller.run! }
 
   before(:each) do
     @actors = ActorHelper.new
@@ -20,7 +20,7 @@ describe Marshaller, :celluloid do
 
   context "when an actor is being supervised" do
     before do
-      Marshaller.supervise MessagingWrapper, :as => :an_actor, :args => [Foo.new, 'test_channel_in', 'test_channel_out']
+      Hollywood::Marshaller.supervise Hollywood::MessagingWrapper, :as => :an_actor, :args => [Foo.new, 'test_channel_in', 'test_channel_out']
       subject
     end
 
@@ -47,7 +47,7 @@ describe Marshaller, :celluloid do
       it 'logs the crash' do
         expect { @actors[:an_actor].crash_me }.to raise_error
         sleep 0.5 # give it a chance to restart
-        log_output.should include "ERROR Backend : MessagingWrapper crashed!"
+        log_output.should include "ERROR Backend : Hollywood::MessagingWrapper crashed!"
       end
     end
   end

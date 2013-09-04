@@ -1,13 +1,13 @@
 require production_code
 require 'support/messaging_helper'
 
-describe MessagingWrapper, :celluloid do
+describe Hollywood::MessagingWrapper, :celluloid do
   let(:updatable) { double "Updatable", { :update => true } }
   let(:input_channel)  { "input_channel" }
   let(:other_channel)  { "other_channel" }
   let(:output_channel) { "output_channel" }
 
-  subject { MessagingWrapper.new updatable, input_channel}
+  subject { Hollywood::MessagingWrapper.new updatable, input_channel}
 
   it 'wraps a ruby object' do
     subject.wraps.should == updatable
@@ -86,7 +86,7 @@ describe MessagingWrapper, :celluloid do
   end
 
   it 'throws an exception if the content does not respond to #update' do
-    expect {MessagingWrapper.new( double('un-updateable'), input_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
+    expect {Hollywood::MessagingWrapper.new( double('un-updateable'), input_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
   end
 
   describe '#new' do
@@ -112,7 +112,7 @@ describe MessagingWrapper, :celluloid do
 
   describe '#to_s' do
     it 'mentions the wrapped class' do
-      subject.to_s.should == "MessagingWrapper[#{updatable.class}]"
+      subject.to_s.should == "Hollywood::MessagingWrapper[#{updatable.class}]"
     end
   end
 

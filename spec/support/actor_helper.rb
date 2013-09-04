@@ -8,8 +8,10 @@ class ActorHelper
   end
 end
 
-class MessagingWrapper
-  def crash_me
-    raise 'Crashed by tests!'
+module Hollywood
+  class MessagingWrapper
+    def crash_me
+      raise 'Crashed by tests!'
+    end
   end
 end
