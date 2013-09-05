@@ -81,8 +81,6 @@ describe Hollywood::MessagingWrapper, :celluloid do
 
     MessageHelper.new.publish('foo', :updated)
     MessageHelper.new.publish('bar', :updated)
-
-    sleep 0.1
   end
 
   it 'throws an exception if the content does not respond to #update' do
@@ -95,7 +93,6 @@ describe Hollywood::MessagingWrapper, :celluloid do
       listener = MessageHelper.new output_channel
 
       MessageHelper.new.publish(input_channel, :update)
-      sleep 0.2
 
       listener.messages.last.should == [output_channel, :updated]
     end
@@ -122,7 +119,6 @@ describe Hollywood::MessagingWrapper, :celluloid do
     context 'it does not update anything else' do
       it 'does not log when it updates' do
         MessageHelper.new.publish(input_channel,:update)
-        sleep 0.2
         subject
         log_output.should_not include log_message
       end
@@ -133,7 +129,7 @@ describe Hollywood::MessagingWrapper, :celluloid do
         subject.updates input_channel
 
         MessageHelper.new.publish(input_channel,:update)
-        sleep 0.2
+        sleep 0.1
         log_output.should include log_message
       end
     end
