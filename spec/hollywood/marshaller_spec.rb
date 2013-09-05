@@ -30,7 +30,7 @@ describe Hollywood::Marshaller, :celluloid do
 
         subject.stop!
         Timeout::timeout(10) do
-          sleep 0.1 while @actors[:an_actor].alive?
+          sleep 0.01 while @actors[:an_actor].alive?
         end
 
         @actors[:an_actor].should_not be_alive
@@ -40,15 +40,18 @@ describe Hollywood::Marshaller, :celluloid do
     context 'when an actor crashes' do
       it 'restarts the actor' do
         expect { @actors[:an_actor].crash_me }.to raise_error
-        sleep 0.5 # give it a chance to restart
+        loop do
+          sleep 0.01
+          break if @actors[:an_actor].class != NilClass
+        end
         @actors[:an_actor].should be_alive
       end
 
       it 'logs the crash' do
         expect { @actors[:an_actor].crash_me }.to raise_error
-        sleep 0.5 # give it a chance to restart
         log_output.should include "ERROR Backend : Hollywood::MessagingWrapper crashed!"
       end
+
     end
   end
 end
