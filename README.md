@@ -25,7 +25,8 @@ These deal with the construction and wiring up of the other elements. They also 
 
 ToDo
 ----
-* Add an example implementation to the documentation
-* Add an more in-depth example implementation to the documentation
-* Extract the dependency on the Logging gem (It's very good but a concurrency library shouldn't have opinions on logging libraries used)
-* Add a neat mechanism for _not_ announcing 'updated' if an update method chooses not to
+1. Allow sending data in messages instead of relying on store/retreive
+2. Extract the dependency on the Logging gem (It's very good but a concurrency library shouldn't have opinions on logging libraries used)
+3. Add a neat mechanism for _not_ announcing 'updated' if an update method chooses not to
+4. Add an example implementation to the documentation
+5. Add an more in-depth example implementation to the documentation
