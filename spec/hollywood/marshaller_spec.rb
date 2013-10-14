@@ -30,10 +30,15 @@ describe Hollywood::Marshaller, :celluloid do
 
         subject.stop!
         Timeout::timeout(10) do
-          sleep 0.01 while @actors[:an_actor].alive?
+          sleep 0.01 while @actors[:an_actor] && @actors[:an_actor].alive?
         end
 
-        @actors[:an_actor].should_not be_alive
+        actor = @actors[:an_actor]
+        if actor
+          actor.should_not be_alive
+        else
+          actor.should be_nil
+        end
       end
     end
 
