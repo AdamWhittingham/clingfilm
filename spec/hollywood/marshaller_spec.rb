@@ -14,7 +14,7 @@ describe Hollywood::Marshaller, :celluloid do
   describe '.run!' do
     it 'configures the logger' do
       subject
-      Celluloid.logger.name.should == 'Backend'
+      expect(Celluloid.logger.name).to eq 'Backend'
     end
   end
 
@@ -35,9 +35,9 @@ describe Hollywood::Marshaller, :celluloid do
 
         actor = @actors[:an_actor]
         if actor
-          actor.should_not be_alive
+          expect(actor).to_not be_alive
         else
-          actor.should be_nil
+          expect(actor).to be_nil
         end
       end
     end
@@ -49,12 +49,12 @@ describe Hollywood::Marshaller, :celluloid do
           sleep 0.01
           break if @actors[:an_actor].class != NilClass
         end
-        @actors[:an_actor].should be_alive
+        expect(@actors[:an_actor]).to be_alive
       end
 
       it 'logs the crash' do
         expect { @actors[:an_actor].crash_me }.to raise_error
-        log_output.should include "ERROR Backend : Hollywood::MessagingWrapper crashed!"
+        expect(log_output).to include "ERROR Backend : Hollywood::MessagingWrapper crashed!"
       end
 
     end
