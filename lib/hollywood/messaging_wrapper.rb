@@ -8,11 +8,11 @@ module Hollywood
 
     attr_reader :exception, :channel
 
-    def initialize content, input_channels, output_channel = nil
+    def initialize content, input_channels, output_channel
       bounce_if_invalid content
       @content = content
       @logger = Logging.logger.new(to_s)
-      Array(input_channels).each {|channel| depends_on channel }
+      Array(input_channels).each{|channel| depends_on channel}
       updates output_channel
     end
 
@@ -48,6 +48,7 @@ module Hollywood
     end
 
     private
+
     def bounce_if_invalid content
       raise "Cannot wrap an object which doesn't provide #update" unless content.respond_to? 'update'
     end

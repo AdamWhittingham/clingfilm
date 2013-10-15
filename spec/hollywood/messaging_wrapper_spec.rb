@@ -1,115 +1,80 @@
 require production_code
 require 'support/messaging_helper'
+require 'support/celluloid_hooks'
 
 describe Hollywood::MessagingWrapper, :celluloid do
-  let(:updatable) { double "Updatable", { :update => true } }
+  let(:wrapped)        { double "wrapped",  { :update => true } }
   let(:input_channel)  { "input_channel" }
   let(:other_channel)  { "other_channel" }
   let(:output_channel) { "output_channel" }
 
-  subject { Hollywood::MessagingWrapper.new updatable, input_channel}
+  subject! { Hollywood::MessagingWrapper.new(wrapped, input_channel, output_channel) }
 
-  it 'wraps a ruby object' do
-    subject.wraps.should == updatable
+  describe "#wraps" do
+    it 'wraps the given object' do
+      expect(subject.wraps).to eq wrapped
+    end
   end
 
-  it 'handles update messages' do
-    updatable.should_receive(:update)
-    subject.handle_message(input_channel, :update)
-  end
-
-  it 'handles updated messages' do
-    updatable.should_receive(:update)
-    subject.handle_message(input_channel, :updated)
-  end
-
-  it 'subscribes to messages on the given input channel' do
-    updatable.should_receive(:update)
-    subject
-    MessageHelper.new.publish(input_channel, :update)
-  end
-
-  it 'only updates for messages on subscribed channels' do
-    updatable.should_receive(:update).once
-    subject
-    MessageHelper.new.publish(other_channel, :update)
-    MessageHelper.new.publish(input_channel, :update)
-  end
-
-  it 'only updates for update or updated messages' do
-    updatable.should_receive(:update).twice
-    subject
-    # We can't use should_not_receive as it launches an exception into a foreign thread
-    # If we want to use a matcher we can't match on 0 times, so do this to get around it
-    MessageHelper.new.publish(input_channel,:not_an_update)
-    MessageHelper.new.publish(input_channel,:update)
-    MessageHelper.new.publish(input_channel,:updated)
-  end
-
-  describe 'when an update message is sent on a subscribed channel' do
-    it 'triggers an update' do
-      updatable.should_receive(:update).once
-      subject
-      MessageHelper.new.publish(input_channel,:updated)
+  describe "messaging" do
+    it 'calls wrapped#update when receiving :update on a subscribed channel' do
+      MessageHelper.new.publish(input_channel, :update)
+      expect(wrapped).to have_received :update
     end
 
-    it 'announces when it updates itself' do
-      listener = MessageHelper.new 'foo'
+    it 'does not update for :update messages on non-subscribed channels' do
+      MessageHelper.new.publish(other_channel, :update)
+      expect(wrapped).to_not have_received :update
+    end
 
-      subject.updates 'foo'
+    it 'does not update for non :update  messages on a subscribed channel' do
+      MessageHelper.new.publish(input_channel, :something_else)
+      expect(wrapped).to_not have_received :update
+    end
 
-      MessageHelper.new.publish(input_channel,:update)
-      sleep 0.2
-      listener.messages.last.should == ['foo',:updated]
+    it 'announces :updated on the output channel if the wrapper returns a value' do
+      listener = MessageHelper.new(output_channel)
+      MessageHelper.new.publish(input_channel, :update)
+      expect(listener.updated?).to be_true
+    end
+
+    xit 'does not announce :updated if the wrapped object returns nil' do
+      wrapped.stub(update: nil)
+      listener = MessageHelper.new(output_channel)
+      MessageHelper.new.publish(input_channel, :update)
+      expect(listener.updated?).to be_false
     end
 
     it 'dies if the wrapped class exceptions' do
-      updatable.stub(:update){raise 'some error'}
+      wrapped.stub(:update){raise 'some error'}
+      MessageHelper.new.publish(input_channel, :update)
+      expect(subject).to_not be_alive
+    end
 
-      subject
-      MessageHelper.new.publish(input_channel,:update)
-
-      subject.should_not be_alive
+    it 'listens for updates on multiple queues' do
+      subject.depends_on 'foo'
+      MessageHelper.new.publish('input_channel', :updated)
+      MessageHelper.new.publish('foo', :updated)
+      expect(wrapped).to have_received(:update).twice
     end
   end
 
-  it 'can listen for updates on multiple queues' do
-    updatable.should_receive(:update).twice
-
-    subject.depends_on 'foo'
-    subject.depends_on 'bar'
-
-    MessageHelper.new.publish('foo', :updated)
-    MessageHelper.new.publish('bar', :updated)
-  end
-
-  it 'throws an exception if the content does not respond to #update' do
-    expect {Hollywood::MessagingWrapper.new( double('un-updateable'), input_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
+  it 'throws an exception if the wrapped object does not respond to #update' do
+    expect { Hollywood::MessagingWrapper.new( double('un-updateable'), input_channel, output_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
   end
 
   describe '#new' do
-    it 'can optionally be created with an output channel' do
-      subject.class.new(updatable, input_channel, output_channel)
-      listener = MessageHelper.new output_channel
-
-      MessageHelper.new.publish(input_channel, :update)
-
-      listener.messages.last.should == [output_channel, :updated]
-    end
-
     it 'can optionally be created with multiple input channels' do
-      updatable.should_receive(:update).twice
-
-      subject.class.new(updatable, ['input_1', 'input_2'])
-
+      Hollywood::MessagingWrapper.new(wrapped, ['input_1', 'input_2'], output_channel)
       MessageHelper.new.publish('input_1', :updated)
       MessageHelper.new.publish('input_2', :updated)
+      expect(wrapped).to have_received(:update).twice
     end
   end
 
   describe '#to_s' do
     it 'mentions the wrapped class' do
-      subject.to_s.should == "Hollywood::MessagingWrapper[#{updatable.class}]"
+      expect(subject.to_s).to eq "Hollywood::MessagingWrapper[#{wrapped.class}]"
     end
   end
 

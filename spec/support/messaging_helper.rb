@@ -8,6 +8,7 @@ class MessageHelper
   def initialize channel='default'
     @messages = []
     subscribe(channel, :handle_message)
+		@has_updated = false
   end
 
   def message_count
@@ -18,6 +19,10 @@ class MessageHelper
     @messages << [channel, message]
     @has_updated = true if message == :updated
   end
+
+	def updated?
+		@has_updated
+	end
 
   def reset
     @has_updated = false
