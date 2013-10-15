@@ -24,8 +24,8 @@ module Hollywood
       @logger.info "<- #{channel}:#{message}"
       case message
       when :update, :updated
-        @content.update
-        announce_updated if @channel
+        result = @content.update
+        announce_updated if result
       end
     end
 

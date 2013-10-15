@@ -38,7 +38,7 @@ describe Hollywood::MessagingWrapper, :celluloid do
       expect(listener.updated?).to be_true
     end
 
-    xit 'does not announce :updated if the wrapped object returns nil' do
+    it 'does not announce :updated if the wrapped object returns nil' do
       wrapped.stub(update: nil)
       listener = MessageHelper.new(output_channel)
       MessageHelper.new.publish(input_channel, :update)
