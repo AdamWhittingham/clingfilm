@@ -1,2 +1,4 @@
 SimpleCov.coverage_dir 'log/coverage/rspec'
-SimpleCov.start
+SimpleCov.start do
+	add_filter '/spec/'
+end
