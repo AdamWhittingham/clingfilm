@@ -24,11 +24,11 @@ describe Hollywood::Marshaller, :celluloid do
       subject
     end
 
-    describe '#stop!' do
+    describe '#stop' do
       it 'terminates the actors' do
         @actors[:an_actor].should be_alive
 
-        subject.stop!
+        subject.stop
         Timeout::timeout(10) do
           sleep 0.01 while @actors[:an_actor] && @actors[:an_actor].alive?
         end

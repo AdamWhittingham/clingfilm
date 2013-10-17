@@ -7,7 +7,7 @@ require_relative 'pulse'
 
 module Hollywood
   class Marshaller < Celluloid::SupervisionGroup
-    alias_method :stop!, :finalize
+    alias_method :stop, :finalize
     Celluloid.logger = Logging.logger['Backend']
   end
 end
