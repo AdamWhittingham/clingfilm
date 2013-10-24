@@ -23,6 +23,15 @@ These are very basic actors which 'pulse' update messages on a given interval. U
 ### Marshallers
 These deal with the construction and wiring up of the other elements. They also recreate any actors which explode due to exceptions.
 
+Logging
+-------
+Hollywood publishes log messages about the sending and receiving of messages between actors at the debug level.
+The logging is done using Celluloids logging mechanism, which is null unless set; for example, in Rails:
+```
+Celluloid.logger = Rails.logger
+```
+More details can be read in the [Celluloid logging docs](https://github.com/celluloid/celluloid/wiki/Logging).
+
 ToDo
 ----
 1. Allow sending data in messages instead of relying on store/retreive
