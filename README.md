@@ -26,6 +26,5 @@ These deal with the construction and wiring up of the other elements. They also 
 ToDo
 ----
 1. Allow sending data in messages instead of relying on store/retreive
-2. Extract the dependency on the Logging gem (It's very good but a concurrency library shouldn't have opinions on logging libraries used)
-3. Add an example implementation to the documentation
-4. Add an more in-depth example implementation to the documentation
+2. Add an example implementation to the documentation
+3. Add an more in-depth example implementation to the documentation

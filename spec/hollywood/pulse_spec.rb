@@ -29,6 +29,6 @@ describe Hollywood::Pulse, :celluloid do
   it 'logs when it sends a pulse' do
     Hollywood::Pulse.new 'foo'
     sleep 0.1
-    expect(log_output).to include "INFO Hollywood::Pulse : sent foo -> update"
+    expect(log_output).to include "update -> foo"
   end
 end

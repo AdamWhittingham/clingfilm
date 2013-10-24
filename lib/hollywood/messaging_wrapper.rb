@@ -1,17 +1,16 @@
 require 'celluloid'
-require 'logging'
 
 module Hollywood
   class MessagingWrapper
     include Celluloid
     include Celluloid::Notifications
+    include Celluloid::Logger
 
     attr_reader :exception, :channel
 
     def initialize content, input_channels, output_channel
       bounce_if_invalid content
       @content = content
-      @logger = Logging.logger.new(to_s)
       Array(input_channels).each{|channel| depends_on channel}
       updates output_channel
     end
@@ -21,7 +20,7 @@ module Hollywood
     end
 
     def handle_message(channel, message)
-      @logger.info "<- #{channel}:#{message}"
+      debug "<- #{channel}:#{message}"
       case message
       when :update, :updated
         result = @content.update
@@ -32,7 +31,7 @@ module Hollywood
     def announce_updated
       message = :updated
       publish(@channel, message)
-      @logger.info "-> #{@channel}:#{message}"
+      debug "-> #{@channel}:#{message}"
     end
 
     def depends_on channel

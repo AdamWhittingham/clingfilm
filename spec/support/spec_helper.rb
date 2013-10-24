@@ -2,11 +2,9 @@ $:.unshift 'lib'
 
 require 'bundler/setup'
 require "simplecov" # Needs to be done first
-require 'logging'
-require 'rspec/logging_helper'
 
-require_relative 'actor_helper'
 require_relative 'logging_helper'
+require_relative 'actor_helper'
 require_relative 'coverage_helper'
 require_relative 'celluloid_hooks'
 

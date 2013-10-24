@@ -1,11 +1,11 @@
 source "https://rubygems.org"
 
 gem 'celluloid'
-gem 'logging'
 
 group :test, :development do
-  gem 'rake'
+  gem 'logging'
   gem 'metric_fu'
+  gem 'rake'
   gem 'rspec'
   gem 'simplecov'
 end

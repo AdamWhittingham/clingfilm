@@ -3,5 +3,5 @@ require_relative 'hollywood/marshaller'
 require_relative 'hollywood/pulse'
 
 module Hollywood
-  VERSION = '0.1.0'
+  VERSION = '0.2.0'
 end

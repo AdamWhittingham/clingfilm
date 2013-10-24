@@ -11,13 +11,6 @@ describe Hollywood::Marshaller, :celluloid do
     @actors = ActorHelper.new
   end
 
-  describe '.run!' do
-    it 'configures the logger' do
-      subject
-      expect(Celluloid.logger.name).to eq 'Backend'
-    end
-  end
-
   context "when an actor is being supervised" do
     before do
       Hollywood::Marshaller.supervise Hollywood::MessagingWrapper, :as => :an_actor, :args => [Foo.new, 'test_channel_in', 'test_channel_out']
@@ -54,7 +47,7 @@ describe Hollywood::Marshaller, :celluloid do
 
       it 'logs the crash' do
         expect { @actors[:an_actor].crash_me }.to raise_error
-        expect(log_output).to include "ERROR Backend : Hollywood::MessagingWrapper crashed!"
+        expect(log_output).to include "Hollywood::MessagingWrapper crashed!"
       end
 
     end

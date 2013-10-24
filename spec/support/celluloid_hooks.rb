@@ -1,4 +1,5 @@
 require 'celluloid'
+require 'logging'
 
 Celluloid.logger = Logging.logger.new(Celluloid.to_s)
 Celluloid.shutdown_timeout = 1

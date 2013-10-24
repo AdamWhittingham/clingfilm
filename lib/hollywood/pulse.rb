@@ -1,17 +1,16 @@
 require 'celluloid'
-require 'logging'
 
 module Hollywood
   class Pulse
     DEFAULT_INTERVAL = 600
     include Celluloid
     include Celluloid::Notifications
+    include Celluloid::Logger
 
     attr_reader :channel
 
     def initialize(channel, options = {})
       @channel = channel
-      @logger = Logging.logger.new(self)
       interval = options.fetch :interval, DEFAULT_INTERVAL
       unless ENV["DISABLE_HOLLYWOOD_POLLING"]
         every(interval) { pulse }
@@ -20,9 +19,8 @@ module Hollywood
     end
 
     def pulse
-      message = :update
-      publish @channel, message
-      @logger.info "sent #{@channel} -> #{message}"
+      publish @channel, :update
+      debug "update -> #{@channel}"
     end
   end
 end
