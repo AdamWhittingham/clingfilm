@@ -21,17 +21,13 @@ module Hollywood
 
     def handle_message(channel, message)
       debug "<- #{channel}:#{message}"
-      case message
-      when :update, :updated
-        result = @content.update
-        announce_updated if result
-      end
+      result = @content.update(message)
+      announce_result(result) if result
     end
 
-    def announce_updated
-      message = :updated
-      publish(@channel, message)
-      debug "-> #{@channel}:#{message}"
+    def announce_result payload
+      publish(@channel, payload)
+      debug "-> #{@channel}:#{payload}"
     end
 
     def depends_on channel

@@ -17,7 +17,7 @@ class MessageHelper
 
   def handle_message (channel, message)
     @messages << [channel, message]
-    @has_updated = true if message == :updated
+    @has_updated = true
   end
 
 	def updated?
