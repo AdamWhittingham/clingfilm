@@ -8,59 +8,15 @@ describe Hollywood::MessagingWrapper, :celluloid do
   let(:other_channel)  { "other_channel" }
   let(:output_channel) { "output_channel" }
   let(:some_data)      { double "some data" }
+  let!(:listener)      { MessageHelper.new(output_channel) }
 
   subject! { Hollywood::MessagingWrapper.new(wrapped, input_channel, output_channel) }
 
-  describe "#wraps" do
-    it 'wraps the given object' do
-      expect(subject.wraps).to eq wrapped
-    end
-  end
-
-  describe "messaging" do
-    it 'calls wrapped#update when receiving a message on a subscribed channel' do
-      MessageHelper.new.publish(input_channel, :update)
-      expect(wrapped).to have_received :update
-    end
-
-    it 'does not update for messages on non-subscribed channels' do
-      MessageHelper.new.publish(other_channel, :update)
-      expect(wrapped).to_not have_received :update
-    end
-
-    it 'announces the return of wrapper#update on the output channel' do
-      wrapped.stub(update: some_data)
-      listener = MessageHelper.new(output_channel)
-      MessageHelper.new.publish(input_channel, :update)
-      expect(listener.messages).to include [output_channel, some_data]
-    end
-
-    it 'does not announce if the wrapped object returns nil' do
-      wrapped.stub(update: nil)
-      listener = MessageHelper.new(output_channel)
-      MessageHelper.new.publish(input_channel, :update)
-      expect(listener).to_not be_updated
-    end
-
-    it 'dies if the wrapped class exceptions' do
-      wrapped.stub(:update){raise 'some error'}
-      MessageHelper.new.publish(input_channel, :update)
-      expect(subject).to_not be_alive
-    end
-
-    it 'listens for updates on multiple queues' do
-      subject.depends_on 'foo'
-      MessageHelper.new.publish('input_channel', :updated)
-      MessageHelper.new.publish('foo', :updated)
-      expect(wrapped).to have_received(:update).twice
-    end
-  end
-
-  it 'throws an exception if the wrapped object does not respond to #update' do
-    expect { Hollywood::MessagingWrapper.new( double('un-updateable'), input_channel, output_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
-  end
-
   describe '#new' do
+    it 'throws an exception if the wrapped object does not respond to #update' do
+      expect { Hollywood::MessagingWrapper.new( double('un-updateable'), input_channel, output_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
+    end
+
     it 'can optionally be created with multiple input channels' do
       Hollywood::MessagingWrapper.new(wrapped, ['input_1', 'input_2'], output_channel)
       MessageHelper.new.publish('input_1', :updated)
@@ -72,6 +28,54 @@ describe Hollywood::MessagingWrapper, :celluloid do
   describe '#to_s' do
     it 'mentions the wrapped class' do
       expect(subject.to_s).to eq "Hollywood::MessagingWrapper[#{wrapped.class}]"
+    end
+  end
+
+  describe "#wraps" do
+    it 'wraps the given object' do
+      expect(subject.wraps).to eq wrapped
+    end
+  end
+
+  describe "messaging" do
+    describe "incomming" do
+      it 'calls wrapped#update when receiving a message on a subscribed channel' do
+        MessageHelper.new.publish(input_channel, :update)
+        expect(wrapped).to have_received :update
+      end
+
+      it 'does not update for messages on non-subscribed channels' do
+        MessageHelper.new.publish(other_channel, :update)
+        expect(wrapped).to_not have_received :update
+      end
+
+      it 'can subscribe to multiple input channels' do
+        subject.depends_on 'foo'
+        MessageHelper.new.publish('input_channel', :updated)
+        MessageHelper.new.publish('foo', :updated)
+        expect(wrapped).to have_received(:update).twice
+      end
+
+    end
+
+    describe "outgoing" do
+      it 'announces the return of wrapper#update on the output channel' do
+        wrapped.stub(update: some_data)
+        MessageHelper.new.publish(input_channel, :update)
+        expect(listener.messages).to include [output_channel, some_data]
+      end
+
+      it 'does not announce if the wrapped object returns nil' do
+        wrapped.stub(update: nil)
+        MessageHelper.new.publish(input_channel, :update)
+        expect(listener).to_not be_updated
+      end
+
+      it 'dies if the wrapped class exceptions' do
+        wrapped.stub(:update){raise 'some error'}
+        MessageHelper.new.publish(input_channel, :update)
+        expect(subject).to_not be_alive
+      end
     end
   end
 
@@ -88,6 +92,6 @@ describe Hollywood::MessagingWrapper, :celluloid do
       sleep 0.1
       log_output.should include "-> #{output_channel}:output"
     end
-
   end
+
 end
