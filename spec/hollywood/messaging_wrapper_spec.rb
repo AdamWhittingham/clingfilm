@@ -7,6 +7,7 @@ describe Hollywood::MessagingWrapper, :celluloid do
   let(:input_channel)  { "input_channel" }
   let(:other_channel)  { "other_channel" }
   let(:output_channel) { "output_channel" }
+  let(:some_data)      { double "some data" }
 
   subject! { Hollywood::MessagingWrapper.new(wrapped, input_channel, output_channel) }
 
@@ -17,32 +18,28 @@ describe Hollywood::MessagingWrapper, :celluloid do
   end
 
   describe "messaging" do
-    it 'calls wrapped#update when receiving :update on a subscribed channel' do
+    it 'calls wrapped#update when receiving a message on a subscribed channel' do
       MessageHelper.new.publish(input_channel, :update)
       expect(wrapped).to have_received :update
     end
 
-    it 'does not update for :update messages on non-subscribed channels' do
+    it 'does not update for messages on non-subscribed channels' do
       MessageHelper.new.publish(other_channel, :update)
       expect(wrapped).to_not have_received :update
     end
 
-    it 'does not update for non :update  messages on a subscribed channel' do
-      MessageHelper.new.publish(input_channel, :something_else)
-      expect(wrapped).to_not have_received :update
-    end
-
-    it 'announces :updated on the output channel if the wrapper returns a value' do
+    it 'announces the return of wrapper#update on the output channel' do
+      wrapped.stub(update: some_data)
       listener = MessageHelper.new(output_channel)
       MessageHelper.new.publish(input_channel, :update)
-      expect(listener.updated?).to be_true
+      expect(listener.messages).to include [output_channel, some_data]
     end
 
-    it 'does not announce :updated if the wrapped object returns nil' do
+    it 'does not announce if the wrapped object returns nil' do
       wrapped.stub(update: nil)
       listener = MessageHelper.new(output_channel)
       MessageHelper.new.publish(input_channel, :update)
-      expect(listener.updated?).to be_false
+      expect(listener).to_not be_updated
     end
 
     it 'dies if the wrapped class exceptions' do
@@ -79,24 +76,18 @@ describe Hollywood::MessagingWrapper, :celluloid do
   end
 
   describe 'logging' do
-    let(:log_message){"-> #{input_channel}:updated"}
-
-    context 'it does not update anything else' do
-      it 'does not log when it updates' do
-        MessageHelper.new.publish(input_channel,:update)
-        subject
-        log_output.should_not include log_message
-      end
+    it 'logs when messages are received' do
+      MessageHelper.new.publish(input_channel,:update)
+      sleep 0.1
+      log_output.should include "<- #{input_channel}:update"
     end
 
-    context 'it updates something else' do
-      it 'logs when it updates' do
-        subject.updates input_channel
-
-        MessageHelper.new.publish(input_channel,:update)
-        sleep 0.1
-        log_output.should include log_message
-      end
+    it 'logs when it announces' do
+      wrapped.stub(update: :output)
+      MessageHelper.new.publish(input_channel,:update)
+      sleep 0.1
+      log_output.should include "-> #{output_channel}:output"
     end
+
   end
 end
