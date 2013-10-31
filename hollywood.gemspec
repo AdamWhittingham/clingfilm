@@ -1,11 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'hollywood'
 
 Gem::Specification.new do |spec|
   spec.name          = "hollywood"
-  spec.version       = Hollywood::VERSION
+  spec.version       = '0.2.1'
   spec.authors       = ["Adam Whittingham"]
   spec.email         = ["adam.whittingham@gmail.com"]
   spec.description   = %q{A light framework for concurrency in Ruby, built on top of Celluloid}
