@@ -80,18 +80,34 @@ describe Hollywood::MessagingWrapper, :celluloid do
   end
 
   describe 'logging' do
-    it 'logs when messages are received' do
-      MessageHelper.new.publish(input_channel,:update)
-      sleep 0.1
-      log_output.should include "<- #{input_channel}:update"
+    context "at the INFO level" do
+      it 'logs when it announces' do
+        wrapped.stub(update: :output)
+        MessageHelper.new.publish(input_channel, :update)
+        sleep 0.1
+        log_output.should include "INFO Celluloid : -> #{output_channel}"
+      end
+
+      it 'logs when a message is received' do
+        MessageHelper.new.publish(input_channel, :update)
+        sleep 0.1
+        log_output.should include "INFO Celluloid : <- #{input_channel}"
+      end
     end
 
-    it 'logs when it announces' do
-      wrapped.stub(update: :output)
-      MessageHelper.new.publish(input_channel,:update)
-      sleep 0.1
-      log_output.should include "-> #{output_channel}:output"
+    context "at the DEBUG level" do
+      it 'logs what it announces' do
+        MessageHelper.new.publish(input_channel, :update)
+        sleep 0.1
+        log_output.should include "DEBUG Celluloid : >> #{output_channel} = true"
+      end
+
+      it 'logs the messages are received' do
+        MessageHelper.new.publish(input_channel,:update)
+        sleep 0.1
+        log_output.should include "DEBUG Celluloid : << #{input_channel} = update"
+      end
     end
+
   end
-
 end
