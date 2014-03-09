@@ -12,7 +12,7 @@ module Clingfilm
     def initialize(channel, options = {})
       @channel = channel
       interval = options.fetch :interval, DEFAULT_INTERVAL
-      unless ENV["DISABLE_CLINGFILM_POLLING"]
+      unless ENV["DISABLE_CLINGFILM_PULSES"]
         every(interval) { pulse }
         pulse
       end
