@@ -8,10 +8,10 @@ class ActorHelper
   end
 end
 
-module Hollywood
+module Clingfilm
   class MessagingWrapper
-    def crash_me
-      raise 'Crashed by tests!'
+    def crash_me message= 'Crashed by tests!'
+      raise message
     end
   end
 end

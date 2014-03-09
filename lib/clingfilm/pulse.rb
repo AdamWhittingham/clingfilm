@@ -1,6 +1,6 @@
 require 'celluloid'
 
-module Hollywood
+module Clingfilm
   class Pulse
     DEFAULT_INTERVAL = 600
     include Celluloid
@@ -12,7 +12,7 @@ module Hollywood
     def initialize(channel, options = {})
       @channel = channel
       interval = options.fetch :interval, DEFAULT_INTERVAL
-      unless ENV["DISABLE_HOLLYWOOD_POLLING"]
+      unless ENV["DISABLE_CLINGFILM_POLLING"]
         every(interval) { pulse }
         pulse
       end

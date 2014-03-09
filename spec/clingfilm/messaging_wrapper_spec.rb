@@ -2,7 +2,7 @@ require production_code
 require 'support/messaging_helper'
 require 'support/celluloid_hooks'
 
-describe Hollywood::MessagingWrapper, :celluloid do
+describe Clingfilm::MessagingWrapper, :celluloid do
   let(:wrapped)        { double "wrapped",  { :update => true } }
   let(:input_channel)  { "input_channel" }
   let(:other_channel)  { "other_channel" }
@@ -10,15 +10,15 @@ describe Hollywood::MessagingWrapper, :celluloid do
   let(:some_data)      { double "some data" }
   let!(:listener)      { MessageHelper.new(output_channel) }
 
-  subject! { Hollywood::MessagingWrapper.new(wrapped, input_channel, output_channel) }
+  subject! { Clingfilm::MessagingWrapper.new(wrapped, input_channel, output_channel) }
 
   describe '#new' do
     it 'throws an exception if the wrapped object does not respond to #update' do
-      expect { Hollywood::MessagingWrapper.new( double('un-updateable'), input_channel, output_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
+      expect { Clingfilm::MessagingWrapper.new( double('un-updateable'), input_channel, output_channel)}.to raise_error "Cannot wrap an object which doesn't provide #update"
     end
 
     it 'can optionally be created with multiple input channels' do
-      Hollywood::MessagingWrapper.new(wrapped, ['input_1', 'input_2'], output_channel)
+      Clingfilm::MessagingWrapper.new(wrapped, ['input_1', 'input_2'], output_channel)
       MessageHelper.new.publish('input_1', :updated)
       MessageHelper.new.publish('input_2', :updated)
       expect(wrapped).to have_received(:update).twice
@@ -27,7 +27,7 @@ describe Hollywood::MessagingWrapper, :celluloid do
 
   describe '#to_s' do
     it 'mentions the wrapped class' do
-      expect(subject.to_s).to eq "Hollywood::MessagingWrapper[#{wrapped.class}]"
+      expect(subject.to_s).to eq "Clingfilm::MessagingWrapper[#{wrapped.class}]"
     end
   end
 

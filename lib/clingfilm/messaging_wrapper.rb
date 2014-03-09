@@ -1,6 +1,6 @@
 require 'celluloid'
 
-module Hollywood
+module Clingfilm
   class MessagingWrapper
     include Celluloid
     include Celluloid::Notifications

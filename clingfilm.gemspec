@@ -3,13 +3,13 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  spec.name          = "hollywood"
-  spec.version       = '0.2.1'
+  spec.name          = "clingfilm"
+  spec.version       = '0.4.0'
   spec.authors       = ["Adam Whittingham"]
   spec.email         = ["adam.whittingham@gmail.com"]
-  spec.description   = %q{A light framework for concurrency in Ruby, built on top of Celluloid}
-  spec.summary       = %q{Hollywood- a nice place for Ruby actors to live}
-  spec.homepage      = "http://github.com/AdamWhittingham/hollywood"
+  spec.description   = %q{A light and easy way of working concurrently with Ruby, built on top of Celluloid}
+  spec.summary       = %q{A light, thin wrapper made of Celluloid}
+  spec.homepage      = "http://github.com/AdamWhittingham/clingfilm"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
