@@ -13,7 +13,9 @@ describe Clingfilm::Marshaller, :celluloid do
 
   context "when an actor is being supervised" do
     before do
-      Clingfilm::Marshaller.supervise Clingfilm::MessagingWrapper, :as => :an_actor, :args => [Foo.new, 'test_channel_in', 'test_channel_out']
+      Clingfilm::Marshaller.supervise Clingfilm::MessagingWrapper,
+          as: :an_actor,
+          args: [Foo.new, 'test_channel_in', 'test_channel_out']
       subject
     end
 
@@ -39,7 +41,7 @@ describe Clingfilm::Marshaller, :celluloid do
       it 'restarts the actor' do
         expect { @actors[:an_actor].crash_me }.to raise_error
         loop do
-          sleep 0.01
+          sleep 0.1
           break if @actors[:an_actor].class != NilClass
         end
         expect(@actors[:an_actor]).to be_alive
