@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "clingfilm"
-  spec.version       = '0.4.0'
+  spec.version       = '0.4.1'
   spec.authors       = ["Adam Whittingham"]
   spec.email         = ["adam.whittingham@gmail.com"]
   spec.description   = %q{A light and easy way of working concurrently with Ruby, built on top of Celluloid}
