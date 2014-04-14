@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "clingfilm"
-  spec.version       = '0.4.0'
+  spec.version       = '0.4.1'
   spec.authors       = ["Adam Whittingham"]
   spec.email         = ["adam.whittingham@gmail.com"]
   spec.description   = %q{A light and easy way of working concurrently with Ruby, built on top of Celluloid}
@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "celluloid", ">= 0.14.0"
+  spec.add_runtime_dependency "celluloid", "~> 0.14", ">= 0.14.0"
   spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rake", "~> 10"
 end
