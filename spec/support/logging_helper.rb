@@ -8,5 +8,5 @@ end
 
 def log_output
   fail "No log output found" unless @log_output
-  @log_output.readlines.map{|s|s.strip.squeeze(" ")}.join "\n"
+  @log_output.readlines.map{|s|s.strip}.join "\n"
 end
