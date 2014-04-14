@@ -3,7 +3,7 @@ Clingfilm
 A nice place for your Ruby actors to live
 -----------------------------------------
 
-Clingfilm is light system for concurrency on top of the wonderful [Celluloid](http://celluloid.io/) project. 
+Clingfilm is light system for concurrency on top of the wonderful [Celluloid](http://celluloid.io/) project.
 Its goal is to be a quick & simple way to make use of the actor pattern in Ruby.
 
 Installation
@@ -34,6 +34,4 @@ More details can be read in the [Celluloid logging docs](https://github.com/cell
 
 ToDo
 ----
-1. Allow sending data in messages instead of relying on store/retreive
-2. Add an example implementation to the documentation
-3. Add an more in-depth example implementation to the documentation
+1. Add an example implementation to the documentation
