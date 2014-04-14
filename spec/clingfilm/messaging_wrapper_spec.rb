@@ -85,13 +85,13 @@ describe Clingfilm::MessagingWrapper, :celluloid do
         wrapped.stub(update: :output)
         MessageHelper.new.publish(input_channel, :update)
         sleep 0.1
-        log_output.should include "INFO Celluloid : -> #{output_channel}"
+        log_output.should include "INFO Celluloid : #{wrapped.class} -> #{output_channel}"
       end
 
       it 'logs when a message is received' do
         MessageHelper.new.publish(input_channel, :update)
         sleep 0.1
-        log_output.should include "INFO Celluloid : <- #{input_channel}"
+        log_output.should include "INFO Celluloid : #{wrapped.class} <- #{input_channel}"
       end
     end
 
@@ -99,13 +99,13 @@ describe Clingfilm::MessagingWrapper, :celluloid do
       it 'logs what it announces' do
         MessageHelper.new.publish(input_channel, :update)
         sleep 0.1
-        log_output.should include "DEBUG Celluloid : >> #{output_channel} = true"
+        log_output.should include "DEBUG Celluloid : #{wrapped} >> #{output_channel} = true"
       end
 
       it 'logs the messages are received' do
         MessageHelper.new.publish(input_channel,:update)
         sleep 0.1
-        log_output.should include "DEBUG Celluloid : << #{input_channel} = update"
+        log_output.should include "DEBUG Celluloid : #{wrapped} << #{input_channel} = update"
       end
     end
 

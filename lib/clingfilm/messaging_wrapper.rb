@@ -20,16 +20,16 @@ module Clingfilm
     end
 
     def handle_message(channel, message)
-      info  "<- #{channel}"
-      debug "<< #{channel} = #{message}"
+      info "#{@content.class} <- #{channel}"
+      debug "#{@content} << #{channel} = #{message}"
       result = @content.update(message)
       announce_updated(result) if result
     end
 
     def announce_updated message
       publish(@channel, message)
-      info  "-> #{@channel}"
-      debug ">> #{@channel} = #{message}"
+      info  "#{@content.class} -> #{@channel}"
+      debug "#{@content} >> #{@channel} = #{message}"
     end
 
     def depends_on channel
