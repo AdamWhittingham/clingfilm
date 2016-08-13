@@ -6,6 +6,14 @@ A nice place for your Ruby actors to live
 Clingfilm is a light system for adding concurrency to Ruby projects, built with the wonderful [Celluloid](http://celluloid.io/) project.
 Its goal is to be a quick & simple way to make use of the actor concurrency pattern in Ruby.
 
+*NOTE* This gem is no longer actively maintained as much better solutions for concurrency in Ruby have rendered this redundant.
+
+Why not take a look at some of these gems as an excellent way of solving similar problems?
+
+  - [concurrent-ruby](https://rubygems.org/gems/concurrent-ruby) 
+  - [sidekiq](https://rubygems.org/gems/sidekiq)
+
+
 Installation
 ------------
 * Install the gem or add `gem "clingfilm"` to your Gemfile
